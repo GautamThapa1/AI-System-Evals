@@ -1,7 +1,9 @@
 import re
-from dataclass import dataclass
-from app.config import KB_PATH
 from functools import lru_cache
+
+from dataclass import dataclass
+
+from app.config import KB_PATH
 
 STOP = {
     "a", "an", "the", "is", "are", "was", "were", "be", "been",
