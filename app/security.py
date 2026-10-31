@@ -31,21 +31,22 @@ per key."""
 
     def __init__(self, limit: int, window: float):
         self.limit, self.window = limit, window
-        self._hits = dict[str, deque] = defaultdict(deque) # request history per key(deuble-ended queue)
+        self._hits: dict[str, deque] = defaultdict(deque) # request history per key(deuble-ended queue)
         self._lock = threading.Lock()
 
-        def allow(self, key:str) -> bool:
-            now = time.monotonic() # current ticking in seconds 
-            with self._lock:
-                hits = self._hits[key]
-                # gets the oldest as it is deque
-                while hits and now - hits[0] > self.window: # remove old requests outside the window
-                    hits.popleft()
-                if len(hits) < self.limit: # if current requests are less than limit, allow
-                    hits.append(now)
-                    return True
-                return False
-        def reset(self) -> None:
-            """Reset the request history"""
-            with self._lock:
-                self._hits.clear()
+    def allow(self, key:str) -> bool:
+        now = time.monotonic() # current ticking in seconds 
+        with self._lock:
+            hits = self._hits[key]
+            # gets the oldest as it is deque
+            while hits and now - hits[0] > self.window: # remove old requests outside the window
+                hits.popleft()
+            if len(hits) < self.limit: # if current requests are less than limit, allow
+                hits.append(now)
+                return True
+            return False
+        
+    def reset(self) -> None:
+        """Reset the request history"""
+        with self._lock:
+            self._hits.clear()

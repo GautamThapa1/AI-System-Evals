@@ -62,8 +62,8 @@ def _call_openai(system: str, user: str, model: str, max_tokens: int):
 
 def _mock_answer(user: str) -> str:
     """It retuns the context whcih is most similar to question"""
-    ctx = re.search(r"<Context>(.*?)</Context>", user, re.DOTALL)
-    qst = re.search(r"<Question>(.*?)</Question>", user, re.DOTALL)
+    ctx = re.search(r"<Context>(.*?)</Context>", user, re.IGNORECASE | re.DOTALL)
+    qst = re.search(r"<Question>(.*?)</Question>", user, re.IGNORECASE | re.DOTALL)
     if not ctx or not qst:
         return REFUSAL # from config.py
     sloppy = os.getenv("MOCK_BEHAVIOUR") == "sloppy"

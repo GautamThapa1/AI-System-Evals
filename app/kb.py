@@ -1,7 +1,7 @@
 import re
 from functools import lru_cache
 
-from dataclass import dataclass
+from dataclasses import dataclass
 
 from app.config import KB_PATH
 
@@ -28,8 +28,13 @@ class Chunk:
 
 @lru_cache(maxsize=1)
 def load_chunks() -> tuple[Chunk, ...]:
-    paragraphs = [p.strip() for p in KB_PATH.read_text(encoding="utf-8").split("\n\n")]
-    paragraphs = [p for p in paragraphs if p and not p.startswith("#")]
+    content = "\n".join(
+        line
+        for line in KB_PATH.read_text(encoding="utf-8").splitlines()
+        if not line.lstrip().startswith("#")
+    )
+    paragraphs = [p.strip() for p in content.split("\n\n")]
+    paragraphs = [p for p in paragraphs if p]
     return tuple(Chunk(f"kb-{i}",p) for i, p in enumerate(paragraphs, start=1))
 
 def retrieve(question: str, k:int=2) -> list[Chunk]:
