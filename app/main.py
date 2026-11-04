@@ -13,13 +13,14 @@ limiter = RateLimiter(RATE_LIMIT_PER_MIN, RATE_LIMIT_WINDOW)  # Initialize the r
 
 class AskRequest(BaseModel):
     model_config = {"extra": "forbid"} # built-in validator to forbid extra fields in the request body
-    question: str = Field(..., min_length=1, max_length=MAX_QUESTION_CHARS) # ... means required field
+    question: str = Field(..., min_length=3, max_length=MAX_QUESTION_CHARS) # ... means required field
 
     @field_validator("question")
     def validate_question(cls, v: str) -> str:
-        if not v.strip():
-            raise ValueError("Question cannot be empty or whitespace")
-        return v.strip()
+        question = v.strip()
+        if len(question) < 3:
+            raise ValueError("Question must be at least 3 characters")
+        return question
 
 class AskResponse(BaseModel):
     answer: str
