@@ -6,7 +6,7 @@ from app.main import app, limiter
 def _offline_and_clean(monkeypatch):
     """Every test should run offline and with a fresh rate limiter state."""
     monkeypatch.setenv("LLM_PROVIDER", "mock")
-    monkeypatch.delenv("MOCK_BEHAVIOR", raising=False)
+    monkeypatch.delenv("MOCK_BEHAVIOUR", raising=False)
     monkeypatch.delenv("API_TOKEN", raising=False)
     limiter.reset()
     yield
